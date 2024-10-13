@@ -3,9 +3,11 @@
 	import Navigation from '$lib/components/navigation.svelte'
 </script>
 
-<div class="flex flex-col min-h-svh h-1 w-full bg-slate-50">
+<div class="flex h-1 min-h-svh w-full flex-col bg-slate-50">
 	<Navigation />
 	<div class="flex-1">
-		<slot />
+		<div class="h-full">
+			<slot />
+		</div>
 	</div>
 </div>
