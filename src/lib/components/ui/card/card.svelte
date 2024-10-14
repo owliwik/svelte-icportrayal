@@ -2,6 +2,11 @@
 	import type { HTMLAttributes } from "svelte/elements";
 	import { cn } from "$lib/utils.js";
 
+
+	export function Root(Root: any) {
+		throw new Error('Function not implemented.')
+	}
+
 	type $$Props = HTMLAttributes<HTMLDivElement>;
 
 	let className: $$Props["class"] = undefined;
