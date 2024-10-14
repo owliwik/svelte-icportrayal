@@ -1,7 +1,7 @@
 import { initializeApp, cert, getApps } from 'firebase-admin/app'
 import { FB_PROJECT_ID, FB_PRIVATE_KEY, FB_CLIENT_EMAIL } from '$env/static/private'
 import { getAuth } from 'firebase-admin/auth'
-import { getDatabase } from 'firebase-admin/database'
+import { getFirestore } from 'firebase-admin/firestore'
 
 /**
  * @type {import("firebase-admin/app").App}
@@ -14,10 +14,12 @@ if (!getApps().length) {
 			projectId: FB_PROJECT_ID,
 			clientEmail: FB_CLIENT_EMAIL,
 			privateKey: FB_PRIVATE_KEY
-		})
+		}),
+    
 	})
 } else {
 	adminApp = getApps()[0]
 }
 
 export let firebaseAuth = getAuth(adminApp)
+export let firebaseDB = getFirestore(adminApp)

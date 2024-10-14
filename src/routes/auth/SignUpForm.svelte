@@ -4,19 +4,35 @@
 	import { Label } from '$lib/components/ui/label'
 	import { Input } from '$lib/components/ui/input'
 	import { Button } from '$lib/components/ui/button'
+	import * as Alert from '$lib/components/ui/alert'
 
-	import { superForm } from 'sveltekit-superforms'
-	import { fly, fade } from 'svelte/transition'
+	import SuperDebug, { superForm } from 'sveltekit-superforms'
+	import LoaderCircle from 'lucide-svelte/icons/loader-circle'
 	import Icon from '@iconify/svelte'
+	import CircleAlert from 'lucide-svelte/icons/circle-alert'
 
 	export let signUpForm
 
 	const form = superForm(signUpForm)
-	const { form: formData, enhance } = form
+	const { form: formData, enhance, errors, message, submitting } = form
 
 	let step = 0
-	let finished = [false, true, true]
+	$: if ($errors.email || $errors.studentID) {
+		step = 0
+	} else if ($errors.password || $errors.confirm) {
+		step = 1
+	}
+
+	// let finished = [false, true]
 </script>
+
+{#if $message}
+	<Alert.Root variant="destructive" class="my-2">
+		<CircleAlert class="h-4 w-4" />
+		<Alert.Title>出错了</Alert.Title>
+		<Alert.Description>{$message}</Alert.Description>
+	</Alert.Root>
+{/if}
 
 <Card.Root class="relative rounded-lg p-4 shadow-2xl">
 	<Card.Header>
@@ -28,19 +44,17 @@
 			<Card.Title class="text-2xl">保护你的账号 🥸</Card.Title>
 			<Card.Description>我们即将完成...</Card.Description>
 		{/if}
-		{#if step == 2}
-			<Card.Title class="text-2xl">只差一步了... 🫡</Card.Title>
-			<Card.Description>欢迎来到IC Portrayal！</Card.Description>
-		{/if}
 	</Card.Header>
 
-	{#if step == 0 && finished[1]}
-		<div
-			in:fly={{ x: '25%', opacity: 0, duration: 500 }}
-			on:introstart={() => (finished[0] = false)}
-			out:fade={{ duration: 200 }}
-			on:outroend={() => (finished[0] = true)}
-		>
+	<form method="POST" action="?/signup" use:enhance on:change={() => ($message = undefined)}>
+		<!-- {#if step == 0 && finished[1]} -->
+		<!-- <div
+				in:fly={{ x: '25%', opacity: 0, duration: 500 }}
+				on:introstart={() => (finished[0] = false)}
+				out:fade={{ duration: 200 }}
+				on:outroend={() => (finished[0] = true)}
+			> -->
+		<div class:hidden={step !== 0}>
 			<Card.Content class="space-y-2">
 				<Form.Field {form} name="studentID">
 					<Form.Control let:attrs>
@@ -57,68 +71,50 @@
 				</Form.Field>
 			</Card.Content>
 		</div>
-	{/if}
+		<!-- {/if} -->
 
-	{#if step == 1 && finished[0] && finished[2]}
-		<div
-			in:fly={{ x: '25%', opacity: 0, duration: 500 }}
-			on:introstart={() => (finished[1] = false)}
-			out:fade={{ duration: 200 }}
-			on:outroend={() => (finished[1] = true)}
-		>
+		<!-- {#if step == 1 && finished[0]} -->
+		<!-- <div
+				in:fly={{ x: '25%', opacity: 0, duration: 500 }}
+				on:introstart={() => (finished[1] = false)}
+				out:fade={{ duration: 200 }}
+				on:outroend={() => (finished[1] = true)}
+			> -->
+		<div class:hidden={step !== 1}>
 			<Card.Content class="space-y-2">
-				<Form.Field {form} name="studentID">
+				<Form.Field {form} name="password">
 					<Form.Control let:attrs>
 						<Label>设置一个密码</Label>
-						<Input {...attrs} bind:value={$formData.studentID} />
+						<Input {...attrs} bind:value={$formData.password} type="password" />
 					</Form.Control>
 				</Form.Field>
 
-				<Form.Field {form} name="email">
+				<Form.Field {form} name="confirm">
 					<Form.Control let:attrs>
 						<Label>确认密码</Label>
-						<Input {...attrs} bind:value={$formData.email} />
+						<Input {...attrs} bind:value={$formData.confirm} type="password" />
 					</Form.Control>
 				</Form.Field>
 			</Card.Content>
 		</div>
-	{/if}
+		<!-- {/if} -->
 
-	{#if step == 2 && finished[1]}
-		<div
-			in:fly={{ x: '25%', opacity: 0, duration: 500 }}
-			on:introstart={() => (finished[2] = false)}
-			out:fade={{ duration: 200 }}
-			on:outroend={() => (finished[2] = true)}
-		>
-			<Card.Content class="space-y-2">
-				<Form.Field {form} name="studentID">
-					<Form.Control let:attrs>
-						<Label>主笔东西</Label>
-						<Input {...attrs} bind:value={$formData.studentID} />
-					</Form.Control>
-				</Form.Field>
-
-				<Form.Field {form} name="email">
-					<Form.Control let:attrs>
-						<Label>我草</Label>
-						<Input {...attrs} bind:value={$formData.email} />
-					</Form.Control>
-				</Form.Field>
-			</Card.Content>
-		</div>
-	{/if}
-
-	<Card.Footer class="mt-3 flex justify-center gap-2">
-		{#if step != 0}
-			<Button variant="secondary" size="icon" on:click={() => step--}>
-				<Icon icon="mingcute:left-line" class="h-5 w-5" />
-			</Button>
-		{/if}
-		{#if step != 2}
-			<Button class="flex-1" on:click={() => step++}>继续！</Button>
-		{:else}
-			<Button class="flex-1" type="submit">提交</Button>
-		{/if}
-	</Card.Footer>
+		<Card.Footer class="mt-3 flex justify-center gap-2">
+			{#if step != 0}
+				<Button variant="secondary" size="icon" on:click={() => step--}>
+					<Icon icon="mingcute:left-line" class="h-5 w-5" />
+				</Button>
+			{/if}
+			{#if step != 1}
+				<Button class="flex-1" on:click={() => step++}>继续！</Button>
+			{:else if $submitting}
+				<Button class="flex-1" type="submit" disabled>
+					<LoaderCircle class="mr-2 h-6 w-6 animate-spin" />
+					正在提交
+				</Button>
+			{:else}
+				<Button class="flex-1" type="submit">提交</Button>
+			{/if}
+		</Card.Footer>
+	</form>
 </Card.Root>
