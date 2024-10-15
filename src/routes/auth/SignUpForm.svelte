@@ -49,7 +49,7 @@
 {/if}
 
 <Card.Root class="relative rounded-lg p-4 shadow-2xl">
-	{#if true}
+	{#if $page.status === 200 && $message && $message.isComplete}
 		<SuccessMask>注册成功</SuccessMask>
 		<div
 			class="pointer-events-none fixed left-0 top-0 z-50 flex h-full w-full items-center justify-center"
