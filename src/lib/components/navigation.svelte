@@ -45,20 +45,21 @@
 
 				<Sheet.Content>
 					<div class="mx-8 my-12">
-
 						<div class="flex flex-col">
 							{#each links as link}
-								<div
-									class="rounded-full px-4 py-2 my-1 transition-all duration-200 hover:bg-foreground hover:text-background"
-								>
-									<a href={link.to}>
+								<a href={link.to}>
+									<div
+										class="my-1 rounded-full px-4 py-2 transition-all duration-200 hover:bg-foreground hover:text-background"
+									>
 										{link.label}
-									</a>
-								</div>
+									</div>
+								</a>
 							{/each}
 						</div>
 
-						<Button href="/auth" class="rounded-full mx-2 px-5 my-4">登录</Button>
+						<a href="/auth">
+							<Button class="mx-2 my-4 rounded-full px-5">登录</Button>
+						</a>
 					</div>
 				</Sheet.Content>
 			</Sheet.Root>
