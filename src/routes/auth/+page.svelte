@@ -7,7 +7,7 @@
 
 	import LoginForm from './LoginForm.svelte'
 	import SignUpForm from './SignUpForm.svelte'
-	
+
 	export let data
 </script>
 

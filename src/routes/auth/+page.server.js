@@ -73,7 +73,7 @@ export const actions = {
 				password,
 			})
 
-			return json(name)
+			return message(form, { isComplete: true })
 		} catch (error) {
 			if (error.errorInfo.code === 'auth/email-already-exists') {
 				return message(form, '该邮箱已经被注册！', { status: 409 })

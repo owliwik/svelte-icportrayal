@@ -5,11 +5,17 @@
 	import { Input } from '$lib/components/ui/input'
 	import { Button } from '$lib/components/ui/button'
 	import * as Alert from '$lib/components/ui/alert'
+	import { Confetti } from 'svelte-confetti'
+	import { page } from '$app/stores'
 
 	import SuperDebug, { superForm } from 'sveltekit-superforms'
 	import LoaderCircle from 'lucide-svelte/icons/loader-circle'
 	import Icon from '@iconify/svelte'
-	import CircleAlert from 'lucide-svelte/icons/circle-alert'
+	import { Terminal, CircleAlert } from 'lucide-svelte'
+	import SuccessMask from '$lib/components/success-mask.svelte'
+	import { toast } from 'svelte-sonner'
+	import { sleep } from '$lib/sleep'
+	import { goto, invalidateAll } from '$app/navigation'
 
 	export let signUpForm
 
@@ -23,11 +29,21 @@
 		step = 1
 	}
 
+	$: {
+		if ($page.status === 200 && $message && $message.isComplete) {
+			;(async () => {
+				await sleep(1500)
+
+				
+			})()
+		}
+	}
+
 	// let finished = [false, true]
 </script>
 
-{#if $message}
-	<Alert.Root variant="destructive" class="my-2">
+{#if $message && $page.status !== 200}
+	<Alert.Root variant={'destructive'} class="my-2">
 		<CircleAlert class="h-4 w-4" />
 		<Alert.Title>出错了</Alert.Title>
 		<Alert.Description>{$message}</Alert.Description>
@@ -35,6 +51,15 @@
 {/if}
 
 <Card.Root class="relative rounded-lg p-4 shadow-2xl">
+	{#if $page.status === 200 && $message && $message.isComplete}
+		<SuccessMask>注册成功</SuccessMask>
+		<div
+			class="pointer-events-none fixed left-0 top-0 z-0 flex h-full w-full items-center justify-center"
+		>
+			<Confetti x={[-4, 4]} y={[-3, 3]} amount={500} duration={3000} />
+		</div>
+	{/if}
+
 	<Card.Header>
 		{#if step == 0}
 			<Card.Title class="text-2xl">加入Portrayal 🙋🏻</Card.Title>
@@ -46,7 +71,7 @@
 		{/if}
 	</Card.Header>
 
-	<form method="POST" action="?/signup" use:enhance on:change={() => ($message = undefined)}>
+	<form method="POST" action="?/signup" use:enhance on:input={() => ($message = undefined)}>
 		<!-- {#if step == 0 && finished[1]} -->
 		<!-- <div
 				in:fly={{ x: '25%', opacity: 0, duration: 500 }}
