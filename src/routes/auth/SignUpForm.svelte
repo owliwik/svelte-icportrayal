@@ -33,8 +33,6 @@
 		if ($page.status === 200 && $message && $message.isComplete) {
 			;(async () => {
 				await sleep(1500)
-
-				
 			})()
 		}
 	}
@@ -51,12 +49,12 @@
 {/if}
 
 <Card.Root class="relative rounded-lg p-4 shadow-2xl">
-	{#if $page.status === 200 && $message && $message.isComplete}
+	{#if true}
 		<SuccessMask>注册成功</SuccessMask>
 		<div
-			class="pointer-events-none fixed left-0 top-0 z-0 flex h-full w-full items-center justify-center"
+			class="pointer-events-none fixed left-0 top-0 z-50 flex h-full w-full items-center justify-center"
 		>
-			<Confetti x={[-4, 4]} y={[-3, 3]} amount={500} duration={3000} />
+			<Confetti x={[-3, 3]} y={[-2, 2]} amount={800} duration={3000} />
 		</div>
 	{/if}
 

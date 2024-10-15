@@ -6,7 +6,7 @@
 </script>
 
 <div class="absolute -z-50 flex h-1 min-h-svh w-full flex-col bg-slate-50">
-<GradientAnimation />
+	<GradientAnimation />
 	<Navigation />
 	<div class="flex-1">
 		<div class="h-full">
